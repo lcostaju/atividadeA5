@@ -1,5 +1,6 @@
 package com.iftm.client.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
@@ -23,6 +24,18 @@ public class ClientService {
 	
 	@Autowired
 	private ClientRepository repository;
+
+	@Transactional(readOnly = true)
+	public List<Client> findByIncome(){
+		List<Client> clients = repository.findByIncome();
+		return clients;
+	}
+
+	@Transactional(readOnly = true)
+	public List<Client> findAll(){
+		List<Client> clients = repository.findAll();
+		return clients;
+	}
 	
 	@Transactional(readOnly = true)
 	public Page<ClientDTO> findAllPaged(PageRequest pageRequest) {
