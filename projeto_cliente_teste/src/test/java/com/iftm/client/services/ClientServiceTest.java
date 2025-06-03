@@ -26,6 +26,10 @@ public class ClientServiceTest {
     @Mock
     private ClientRepository repositorio;
 
+    /**
+     * Testa se o método delete do serviço não lança exceção ao tentar apagar um cliente com ID existente.
+     * Garante que o repositório é chamado corretamente para deletar o cliente.
+     */
     @Test
     public void testarApagarClienteQuandoIDExistenteSemRetorno() {
         // assign
@@ -39,6 +43,10 @@ public class ClientServiceTest {
         Mockito.verify(repositorio, Mockito.times(1)).deleteById(IdExistente);
     }
 
+    /**
+     * Testa se o método delete do serviço lança ResourceNotFoundException ao tentar apagar um cliente com ID inexistente.
+     * Garante que o repositório lança a exceção esperada e que o serviço a converte corretamente.
+     */
     @Test
     public void apagarGeraExcecaoQuandoIdNaoExiste() {
         // assign
@@ -52,6 +60,10 @@ public class ClientServiceTest {
         Mockito.verify(repositorio, Mockito.times(1)).deleteById(IdNaoExistente);
     }
 
+    /**
+     * Testa se o método findAll do serviço retorna corretamente todos os clientes cadastrados.
+     * Garante que a lista retornada não está vazia e que os dados são consistentes.
+     */
     @Test
     public void retornaTodosClientes() {
         // assign
@@ -71,6 +83,10 @@ public class ClientServiceTest {
         Mockito.verify(repositorio, Mockito.times(1)).findAll();
     }
 
+    /**
+     * Testa se o método findByIncome do serviço retorna corretamente os clientes com income informado.
+     * Garante que a lista retornada não está vazia e que os dados são consistentes.
+     */
     @Test
     public void retornaClientesComIncomeInformado() {
         // assign
