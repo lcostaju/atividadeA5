@@ -113,6 +113,9 @@ public class ClientServiceTest {
         Mockito.verify(repositorio, Mockito.times(1)).findByIncome(income);
     }
 
+
+    //#region TESTES DE UNIDADE
+
     /**
      * Testa se o método findAllPaged do serviço retorna uma página contendo
      * todos os clientes cadastrados.
@@ -215,4 +218,6 @@ public class ClientServiceTest {
         Assertions.assertThrows(ResourceNotFoundException.class, () -> servico.update(id, dto));
         Mockito.verify(repositorio).getOne(id);
     }
+
+    //#endregion
 }

@@ -8,6 +8,7 @@ import java.util.Optional;
 import javax.persistence.EntityNotFoundException;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -32,6 +33,14 @@ public class ClientServiceIntegrationTest {
 
     @Autowired
     private ClientService servico;
+
+    @BeforeEach
+    void setUp() {
+        // servico.delete();
+
+        ClientDTO client = new ClientDTO(null, "Maria José", "123", 5000.0, Instant.now(), 0);
+        client = servico.insert(client);
+    }
 
     // @Mock
     // private ClientRepository repositorio;
@@ -139,8 +148,10 @@ public class ClientServiceIntegrationTest {
      */
     @Test
     public void findByIdDeveriaRetornarClientDTOQuandoIdExistir() {
-        Long id = 1L;
-        Client client = new Client(id, "Nome", "123", 5000.0, Instant.now(), 0);
+        //Long id = 1L;
+        // Client client = new Client(id, "Nome", "123", 5000.0, Instant.now(), 0);
+        Client client = servico.findAll().get(0);
+        Long id = client.getId();
 
         // Mockito.when(repositorio.findById(id)).thenReturn(Optional.of(client));
 
@@ -188,9 +199,13 @@ public class ClientServiceIntegrationTest {
      */
     @Test
     public void updateDeveriaRetornarClientDTOQuandoIdExistir() {
-        Long id = 1L;
-        ClientDTO dto = new ClientDTO(new Client());
-        Client client = new Client();
+        // Long id = 1L;
+        // ClientDTO dto = new ClientDTO(new Client());
+        // Client client = new Client();
+
+        Client client = servico.findAll().get(0);
+        Long id = client.getId();
+        ClientDTO dto = new ClientDTO(client);
 
         // Mockito.when(repositorio.getOne(id)).thenReturn(client);
         // Mockito.when(repositorio.save(client)).thenReturn(client);
