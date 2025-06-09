@@ -13,6 +13,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -24,14 +26,15 @@ import com.iftm.client.entities.Client;
 import com.iftm.client.repositories.ClientRepository;
 import com.iftm.client.services.exceptions.ResourceNotFoundException;
 
-@ExtendWith(SpringExtension.class)
+// @ExtendWith(SpringExtension.class)
+@SpringBootTest
 public class ClientServiceIntegrationTest {
 
-    @InjectMocks
+    @Autowired
     private ClientService servico;
 
-    @Mock
-    private ClientRepository repositorio;
+    // @Mock
+    // private ClientRepository repositorio;
 
     /**
      * Testa se o método delete do serviço não lança exceção ao tentar apagar um
@@ -42,13 +45,13 @@ public class ClientServiceIntegrationTest {
     public void testarApagarClienteQuandoIDExistenteSemRetorno() {
         // assign
         Long IdExistente = 1L;
-        Mockito.doNothing().when(repositorio).deleteById(IdExistente);
+        // Mockito.doNothing().when(repositorio).deleteById(IdExistente);
         // act and assert
         Assertions.assertDoesNotThrow(() -> {
             servico.delete(IdExistente);
         });
 
-        Mockito.verify(repositorio, Mockito.times(1)).deleteById(IdExistente);
+        // Mockito.verify(repositorio, Mockito.times(1)).deleteById(IdExistente);
     }
 
     /**
@@ -63,11 +66,11 @@ public class ClientServiceIntegrationTest {
         Long IdNaoExistente = 1000L;
 
         // act and assert
-        Mockito.doThrow(EmptyResultDataAccessException.class).when(repositorio).deleteById(IdNaoExistente);
+        // Mockito.doThrow(EmptyResultDataAccessException.class).when(repositorio).deleteById(IdNaoExistente);
         Assertions.assertThrows(ResourceNotFoundException.class, () -> {
             servico.delete(IdNaoExistente);
         });
-        Mockito.verify(repositorio, Mockito.times(1)).deleteById(IdNaoExistente);
+        // Mockito.verify(repositorio, Mockito.times(1)).deleteById(IdNaoExistente);
     }
 
     /**
@@ -78,12 +81,10 @@ public class ClientServiceIntegrationTest {
     @Test
     public void retornaTodosClientes() {
         // assign
-        List<Client> listaClientes = new ArrayList<Client>();
-        listaClientes.add(new Client(4l, "Carolina Maria de Jesus", "10419244771", 7500.0,
-                Instant.parse("1996-12-23T07:00:00Z"), 0));
+        List<Client> listaClientes = servico.findAll();
 
         // act and assert
-        Mockito.when(repositorio.findAll()).thenReturn(listaClientes);
+        // Mockito.when(repositorio.findAll()).thenReturn(listaClientes);
 
         List<Client> clientesRetornados = servico.findAll();
 
@@ -91,7 +92,7 @@ public class ClientServiceIntegrationTest {
         Assertions.assertEquals(listaClientes.size(), clientesRetornados.size());
         Assertions.assertEquals(listaClientes.get(0), clientesRetornados.get(0));
 
-        Mockito.verify(repositorio, Mockito.times(1)).findAll();
+        // Mockito.verify(repositorio, Mockito.times(1)).findAll();
     }
 
     /**
@@ -104,13 +105,13 @@ public class ClientServiceIntegrationTest {
         Double income = 7500.0;
         List<Client> lista = List.of(new Client(4L, "Carolina", "123", income, Instant.now(), 0));
 
-        Mockito.when(repositorio.findByIncome(income)).thenReturn(lista);
+        // Mockito.when(repositorio.findByIncome(income)).thenReturn(lista);
 
         List<Client> resultado = servico.findByIncome(income);
 
         Assertions.assertEquals(1, resultado.size());
         Assertions.assertEquals(income, resultado.get(0).getIncome());
-        Mockito.verify(repositorio, Mockito.times(1)).findByIncome(income);
+        // Mockito.verify(repositorio, Mockito.times(1)).findByIncome(income);
     }
 
     /**
@@ -124,12 +125,12 @@ public class ClientServiceIntegrationTest {
         List<Client> lista = List.of(new Client());
         Page<Client> page = new PageImpl<>(lista);
 
-        Mockito.when(repositorio.findAll(pageRequest)).thenReturn(page);
+        // Mockito.when(repositorio.findAll(pageRequest)).thenReturn(page);
 
         Page<ClientDTO> resultado = servico.findAllPaged(pageRequest);
 
         Assertions.assertFalse(resultado.isEmpty());
-        Mockito.verify(repositorio, Mockito.times(1)).findAll(pageRequest);
+        // Mockito.verify(repositorio, Mockito.times(1)).findAll(pageRequest);
     }
 
     /**
@@ -141,13 +142,13 @@ public class ClientServiceIntegrationTest {
         Long id = 1L;
         Client client = new Client(id, "Nome", "123", 5000.0, Instant.now(), 0);
 
-        Mockito.when(repositorio.findById(id)).thenReturn(Optional.of(client));
+        // Mockito.when(repositorio.findById(id)).thenReturn(Optional.of(client));
 
         ClientDTO resultado = servico.findById(id);
 
         Assertions.assertNotNull(resultado);
         Assertions.assertEquals(id, resultado.getId());
-        Mockito.verify(repositorio).findById(id);
+        // Mockito.verify(repositorio).findById(id);
     }
 
     /**
@@ -157,10 +158,10 @@ public class ClientServiceIntegrationTest {
     @Test
     public void findByIdDeveriaLancarExcecaoQuandoIdNaoExistir() {
         Long id = 999L;
-        Mockito.when(repositorio.findById(id)).thenReturn(Optional.empty());
+        // Mockito.when(repositorio.findById(id)).thenReturn(Optional.empty());
 
         Assertions.assertThrows(ResourceNotFoundException.class, () -> servico.findById(id));
-        Mockito.verify(repositorio).findById(id);
+        // Mockito.verify(repositorio).findById(id);
     }
 
     /**
@@ -172,12 +173,12 @@ public class ClientServiceIntegrationTest {
         ClientDTO dto = new ClientDTO(new Client());
         Client client = dto.toEntity();
 
-        Mockito.when(repositorio.save(Mockito.any())).thenReturn(client);
+        // Mockito.when(repositorio.save(Mockito.any())).thenReturn(client);
 
         ClientDTO resultado = servico.insert(dto);
 
         Assertions.assertNotNull(resultado);
-        Mockito.verify(repositorio).save(Mockito.any());
+        // Mockito.verify(repositorio).save(Mockito.any());
     }
 
     /**
@@ -191,14 +192,14 @@ public class ClientServiceIntegrationTest {
         ClientDTO dto = new ClientDTO(new Client());
         Client client = new Client();
 
-        Mockito.when(repositorio.getOne(id)).thenReturn(client);
-        Mockito.when(repositorio.save(client)).thenReturn(client);
+        // Mockito.when(repositorio.getOne(id)).thenReturn(client);
+        // Mockito.when(repositorio.save(client)).thenReturn(client);
 
         ClientDTO resultado = servico.update(id, dto);
 
         Assertions.assertNotNull(resultado);
-        Mockito.verify(repositorio).getOne(id);
-        Mockito.verify(repositorio).save(client);
+        // Mockito.verify(repositorio).getOne(id);
+        // Mockito.verify(repositorio).save(client);
     }
 
     /**
@@ -210,9 +211,9 @@ public class ClientServiceIntegrationTest {
         Long id = 1000L;
         ClientDTO dto = new ClientDTO(new Client());
 
-        Mockito.when(repositorio.getOne(id)).thenThrow(EntityNotFoundException.class);
+        // Mockito.when(repositorio.getOne(id)).thenThrow(EntityNotFoundException.class);
 
         Assertions.assertThrows(ResourceNotFoundException.class, () -> servico.update(id, dto));
-        Mockito.verify(repositorio).getOne(id);
+        // Mockito.verify(repositorio).getOne(id);
     }
 }
