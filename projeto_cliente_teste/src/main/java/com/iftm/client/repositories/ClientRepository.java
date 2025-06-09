@@ -10,6 +10,6 @@ import com.iftm.client.entities.Client;
 @Repository
 public interface ClientRepository extends JpaRepository<Client, Long> {
 
-    List<Client> findByIncome();
+    List<Client> findByIncome(Double income);
 
 }
